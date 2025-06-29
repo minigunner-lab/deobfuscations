@@ -1,0 +1,602 @@
+_G.GGH52Lan = true
+wait(2)
+_G.GGH52Lan = nil
+
+local cloneref = cloneref or function(o) return o end
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/Bwhw827g29wh/47448/refs/heads/main/Orion_Mobile.lua')))()
+
+local HttpService = cloneref(game:GetService("HttpService"))
+local plr = cloneref(game:GetService("Players")).LocalPlayer
+
+local function notify(n, c, i, t)
+    n = n or "GGH52Lan"
+    c = c or "text"
+    i = i or "rbxassetid://14260295451"
+    t = t or 5
+    OrionLib:MakeNotification({
+        Name = n,
+        Content = c,
+        Image = i,
+        Time = t
+    })
+    OrionLib:Init()
+end
+
+OrionLib:GGHbut(false)
+
+local Players = cloneref(game:GetService("Players"))
+local plr = Players.LocalPlayer
+local ver = "PREMIUM 🌟"
+local Mode = "Random"
+local remote = cloneref(game:GetService("ReplicatedStorage"):WaitForChild("Gameplay"):WaitForChild("Core"):WaitForChild("Default"):WaitForChild("Remotes"):WaitForChild("Pass"))
+local BombFol = workspace.Bombs
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Bwhw827g29wh/47448/refs/heads/main/SonicxShadow%20UI%20Library.lua"))()
+local Window = library:Window("Pass or D1e? "..ver, getgenv().Gtheme or "Sonic")
+local twobomb = false
+local Humanoid
+local Character
+local Connections = {}
+local tooFast = false 
+local UserInputService_upvr = cloneref(game:GetService("UserInputService"))
+local any_GetControls_result1_upvr = require(game:GetService("Players").LocalPlayer:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule")):GetControls()
+local IsFast = 0
+local RoundPosition  
+local tpPOs = CFrame.new(0.0410940312, 4.38491011, -194.074448, -0.999643564, 1.9374184e-08, 0.0266977362, 1.96179961e-08, 1, 8.87038443e-09, -0.0266977362, 9.39097866e-09, -0.999643564)
+local controller = cloneref(game:GetService("Players").LocalPlayer.PlayerGui.Bottom.Controls)
+local RunService = cloneref(game:GetService("RunService"))
+local NotiBar = cloneref(game:GetService("Players").LocalPlayer.PlayerGui.Bottom.NotiBar)
+local sethidden = sethiddenproperty or set_hidden_property or set_hidden_prop
+local gethidden = gethiddenproperty or get_hidden_property or get_hidden_prop
+local queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
+local httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
+local PlaceId, JobId = game.PlaceId, game.JobId
+local IsOnMobile = table.find({Enum.Platform.IOS, Enum.Platform.Android}, game:GetService("UserInputService"):GetPlatform())
+local everyClipboard = setclipboard or toclipboard or set_clipboard or (Clipboard and Clipboard.set)
+local GG = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Bwhw827g29wh/47448/refs/heads/main/GetPlayers.lua"))()
+
+local function doubleCheckAndDisconnect(con)
+    if con and typeof(con) == "RBXScriptConnection" then
+        if con.Connected then
+            con:Disconnect()
+            print(con.Connected)
+        else
+            print("already")
+        end
+    else
+        
+    end
+end
+
+local function backToPosition()
+    if Character and RoundPosition then
+        Character.PrimaryPart.CFrame = RoundPosition
+    end
+end
+
+local function tp()
+    if Character then
+        Character.PrimaryPart.CFrame = tpPOs
+    end
+end
+
+local function twobombDetector()
+    Connections.r2 = RunService.Stepped:Connect(function()
+        if BombFol:GetChildren()[2] then
+            twobomb = true
+            --print("2 bomb or more")
+            elseif #BombFol:GetChildren() < 2 then
+                twobomb = false
+            end
+        -- game:GetService("RunService").Heartbeat:Wait()
+    end)
+end
+
+local function pick()
+    local directions = {"Right", "Left", "Forward"}
+    local randomIndex = math.random(1, #directions)
+    return directions[randomIndex]
+end 
+
+local function Respawn() 
+    game:GetService("ReplicatedStorage"):WaitForChild("Gameplay"):WaitForChild("Core"):WaitForChild("Default"):WaitForChild("Remotes"):WaitForChild("Respawn"):InvokeServer()
+    wait(1)
+    backToPosition()
+end 
+
+local function Walk()
+   -- Respawn()
+    UserInputService_upvr.ModalEnabled = false
+	any_GetControls_result1_upvr:Enable()
+	plr.Character.HumanoidRootPart.Anchored = false 
+	plr.Character.Humanoid.PlatformStand = true 
+	wait(1)
+	plr.Character.Humanoid.PlatformStand = false
+end 
+
+local function boms()
+    for _, v in pairs(BombFol:GetChildren()) do
+        if v and plr:DistanceFromCharacter(v.Position) <= 5 then
+            return v
+        end
+    end
+    return nil
+end 
+
+local function detectAllbombs()
+	local backupTable = {}
+	for i, v in pairs(BombFol:GetChildren()) do
+        if v and plr:DistanceFromCharacter(v.Position) <= 5 then
+            backupTable[i] = v
+        end
+    end
+    return backupTable or nil
+end 
+
+local function detectBombColor()
+    for _, v in pairs(BombFol:GetChildren()) do
+        if v and plr:DistanceFromCharacter(v.Position) <= 5 then
+            if v:FindFirstChildOfClass("Highlight") then
+                return v:FindFirstChildOfClass("Highlight").FillTransparency
+                else
+                    print("retrying ")
+                    task.wait(0.1)
+                    return v:FindFirstChildOfClass("Highlight").FillTransparency
+            end
+        end
+    end
+    return nil
+end
+
+local function getTransparencySpeed(bomb)
+    if bomb and bomb:FindFirstChildOfClass("Highlight") then
+    
+    local highlight = bomb:FindFirstChildOfClass("Highlight")
+    local initialTransparency = highlight.FillTransparency
+    task.wait(0.05) -- Short delay for precise measurement
+    local newTransparency = highlight.FillTransparency
+
+    -- Calculate speed (change in transparency per second)
+    local speed = math.abs(initialTransparency - newTransparency) / 0.47
+    return speed, newTransparency
+    end
+end
+
+local function subtract(speed, currentTransparency)
+    if speed and currentTransparency then
+    local targetTransparency = 0.500 -- Explosion threshold
+    
+    -- Subtract speed from transparency until reaching the target
+    local resultTransparency = currentTransparency - speed
+    
+    -- Ensure it doesn't go below 0.5
+    return math.max(resultTransparency, targetTransparency)
+    end
+end
+
+local function ping()
+local player = game.Players.LocalPlayer
+local pingInMilliseconds = player:GetNetworkPing() * 1000
+return pingInMilliseconds
+--print(pingInMilliseconds .. " ms")
+end
+
+local active = false
+local function autoPass(bool)
+    active = bool 
+   Connections.autoPass = bool 
+    if bool then 
+        while Connections.autoPass do 
+            local direction = Mode == "Random" and pick() or Mode
+            local bomb = boms()
+                
+            if bomb and not twobomb then
+                if bomb:FindFirstChildOfClass("Fire") then
+                   -- print(bomb.Name, "Fire Detected")
+                    remote:InvokeServer(direction)
+                    task.wait(0.1) -- Adding a slight wait to prevent spamming
+                end
+                
+                local currentPing = ping()
+                local colorTransparency = detectBombColor()
+                
+                local speed, updatedTransparency = getTransparencySpeed(bomb)
+                local threshold = subtract(speed, updatedTransparency)
+                
+                if colorTransparency then
+                    if threshold <= 0.505 then
+                      --  print(speed, threshold, updatedTransparency)
+                       -- print("[PASSING] Bomb is about to explode due to speed, passing now!")
+                    
+                        remote:InvokeServer(direction)
+                    
+                    end
+                end
+            elseif twobomb then
+                local b1, b2 = BombFol:GetChildren()[1], BombFol:GetChildren()[2]
+                if b1 and b1:FindFirstChildOfClass("Fire") then
+                  --  print(b1.Name, "Fire Detected")
+                    local direction = Mode == "Random" and pick() or Mode
+                    remote:InvokeServer(direction)
+                    task.wait(0.1) -- Adding a slight wait to prevent spamming
+                end
+                
+                local currentPing = ping()
+                local colorTransparency = detectBombColor()
+                
+                local speed, updatedTransparency = getTransparencySpeed(bomb)
+                local threshold = subtract(speed, updatedTransparency)
+                
+                if b1 and plr:DistanceFromCharacter(b1.Position) <= 5 then 
+                    local t1 = b1:FindFirstChildOfClass("Highlight").FillTransparency
+                    if t1 and threshold <= 0.505 then
+                       -- print("1 :: ", b1)
+                        remote:InvokeServer(direction)
+                    end
+                end
+
+                if b2 and b2:FindFirstChildOfClass("Highlight") and plr:DistanceFromCharacter(b2.Position) <= 5 then
+                    local t2 = b2:FindFirstChildOfClass("Highlight").FillTransparency
+                    if t2 and threshold <= 0.505 then
+                      --  print("2 :: ", b2)
+                        remote:InvokeServer(direction)
+                    end
+                end
+            end
+            
+             game:GetService("RunService").Stepped:Wait()
+        end
+    else
+        active = false
+      Connections.autoPass = false
+    end
+end
+
+local function bombPosDetector()
+    
+        local bomb = boms()
+        if twobomb then
+               local pos1 = BombFol:GetChildren()[1].Position
+               local pos2 = BombFol:GetChildren()[2].Position
+               return pos1, pos2
+           else
+               local Position = bomb.Position
+               return Position
+        end
+        
+       -- game:GetService("RunService").Heartbeat:Wait()
+    
+end
+
+local safetyON = false
+local function safety(bool)
+    safetyON = bool 
+    Connections.Safety = bool 
+    if bool then
+         while Connections.Safety do 
+         if Humanoid and Humanoid.Health <= 50 then
+             game:GetService("ReplicatedStorage"):WaitForChild("Gameplay"):WaitForChild("Core"):WaitForChild("Default"):WaitForChild("Remotes"):WaitForChild("Respawn"):InvokeServer()
+             wait(1)
+         end
+         game:GetService("RunService").Stepped:Wait()
+    end
+    else
+        Connections.Safety = false
+        end
+end
+
+local active1 = false
+local function test(bool)
+    active1 = bool 
+    Connections.test = bool 
+    if bool then
+         while Connections.test do 
+            local bomb = boms() -- Call boms() once and store the result
+            if bomb then
+                
+                local speed, updatedTransparency = getTransparencySpeed(bomb)
+                local threshold = subtract(speed, updatedTransparency)
+                    
+                if threshold <= 0.502 then
+                    -- print(bomb, colorTransparency)
+                    game:GetService("ReplicatedStorage"):WaitForChild("Gameplay"):WaitForChild("Core"):WaitForChild("Default"):WaitForChild("Remotes"):WaitForChild("Respawn"):InvokeServer()
+           
+                end
+            end
+             game:GetService("RunService").Stepped:Wait()
+        end
+    else
+        active1 = false
+        Connections.test = false 
+    end
+end
+
+local function autoPlay(bool)
+	Connections.autoPlay = bool 
+	if bool then 
+		while Connections.autoPlay do
+			   local direction = Mode == "Random" and pick() or Mode
+			   local Bombs = detectAllbombs()
+			   if Bombs then
+			   for i,v in pairs(Bombs) do 
+			   	   local delta = 0.0001 -- Acceptable error margin
+                   local targetSize = 3.472
+                   
+			   	   if v and v.Size.Z <= targetSize then  
+			   	   	local speed, updatedTransparency = getTransparencySpeed(v)
+                    local threshold = subtract(speed, updatedTransparency)
+                    if threshold > 0.6 then
+			   	   	remote:InvokeServer(direction) 
+			   	   	-- print(v.Size.Z)
+                    elseif threshold < 0.6 then 
+		   	   		if threshold <= 0.505 then 
+		   	   			remote:InvokeServer(direction) 
+			   	   	end 
+			   	   	end
+			   	   elseif v and v.Size.Z >= targetSize then 
+		   	   		local speed, updatedTransparency = getTransparencySpeed(v)
+                    local threshold = subtract(speed, updatedTransparency)
+                    if threshold > 0.6 then
+			   	   	remote:InvokeServer("Forward")
+                    elseif threshold < 0.6 then 
+		   	   		if threshold <= 0.505 then 
+		   	   			remote:InvokeServer("Forward")
+			   	   	end 
+			   	   	end
+			   	   	end
+			   	end 
+			   end 
+		   
+			game:GetService("RunService").Stepped:Wait()
+		end 
+		else 
+		Connections.autoPlay = false
+	end 
+end
+    
+Window:Label("By GGH52LAN",true)
+local dropdown = Window:Dropdown("Pass direction", {"Right", "Forward", "Left", "Random"}, function(o)
+    Mode = o -- Simplified assignment based on selected option
+end)
+
+Window:Button("Respawn 👼", function ()
+    if not tooFast then
+    task.spawn(function()
+    game:GetService("ReplicatedStorage"):WaitForChild("Gameplay"):WaitForChild("Core"):WaitForChild("Default"):WaitForChild("Remotes"):WaitForChild("Respawn"):InvokeServer()
+    end)
+    
+    else
+        -- notify("too fast!!")
+    end
+    IsFast = IsFast + 1
+    task.wait(1)
+    IsFast = IsFast - 1
+end)
+
+Connections.autoPass = false
+Connections.autoPlay = false 
+local utoPass, utoPlay
+
+utoPass = Window:Toggle("Auto Pass Bomb 🔥", false, function(bool)
+    if Connections.autoPlay then 
+        utoPlay:Switch(false)
+    end
+    
+    Connections.autoPass = bool 
+    pcall(function()
+    autoPass(bool)
+    end)
+end)
+
+utoPlay = Window:Toggle("Auto Play 🤖", false, function(bool)
+	if Connections.autoPass then 
+	    utoPass:Switch(false)
+	end
+	
+	Connections.autoPlay = bool 
+    pcall(function()
+    autoPlay(bool)
+    end) 
+end)
+
+Window:Toggle("Fire safety 🛡️", false, function(bool)
+	pcall(function()
+        safety(bool)
+	end)
+wait(1)
+end)
+
+Window:Toggle("Safety 🛡️", false, function(bool)
+    pcall(function()
+    test(bool) 
+    end)
+    wait(1)
+end) 
+
+local Target 
+
+local function Use(value: number)
+game:GetService("ReplicatedStorage"):WaitForChild("Powers"):WaitForChild("Core"):WaitForChild("Default"):WaitForChild("Remotes"):WaitForChild("Use"):InvokeServer(tostring(value))
+end 
+
+local Window_2 = library:Window("🌟 Use Powers 🌟", getgenv().Gtheme or "Sonic")
+Window_2:Label("works in lobby")
+
+Window_2:Box("Choose Player", function(text, focuslost)
+   if focuslost then
+   for i,v in pairs(GG:getPlayers(text)) do 
+      if v then 
+          Target = v
+      end 
+      end
+   end
+end)
+
+Window_2:Button("Bomb", function()
+    Use(1)
+end)
+
+Window_2:Button("Lazer eye", function()
+    Use(10)
+end)
+
+Window_2:Button("Fire", function()
+    Use(6)
+end)
+
+Window_2:Button("Explode", function()
+    Use(5)
+end)
+
+Window_2:Button("Freeze", function()
+    if Target then 
+    game:GetService("ReplicatedStorage"):WaitForChild("Powers"):WaitForChild("Core"):WaitForChild("Default"):WaitForChild("Remotes"):WaitForChild("ChoosePlayer"):InvokeServer(Target)
+    wait(.5)
+    Use(3)
+    else 
+    notify("System","Please Choose 1 Player")
+    end 
+end)
+
+Window_2:Button("All Bombs + Fire", function()
+    local s = string.match(game:GetService("Players").LocalPlayer.PlayerGui.Powers.Panel.List.ScrollingFrame["1"].Quantity.Text, "%d")
+    assert(s, "no bombs left")
+    local d = tonumber(s)
+    repeat 
+    Use(1)
+    until game:GetService("Players").LocalPlayer.PlayerGui.Powers.Panel.List.ScrollingFrame["1"].Quantity.Text == ""
+    wait(1)
+    Use(6)
+end)
+
+local STC = loadstring(game:HttpGet("https://gist.githubusercontent.com/Bwhw827g29wh/84d4a9c747bfee81ddc9e453e9d144a6/raw/ce28638dabd077dabe0745feaad62b079e3eafc4/Support%2520the%2520creator.lua",true))()
+
+local a = false
+Window:Button("Support the creator", function()
+    STC:Show()
+end)
+
+task.spawn(twobombDetector)
+
+notify("YT: GGsSonic", "SUBSCRIBE", nil, 20)
+-- notify("owner Roblox account","GGH52Lan",nil,20)
+notify("⚠️Reminder⚠️", "if the bomb is exploding in ur hand it means u have slow internet",nil,15)
+
+-- Create a ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.CoreGui
+
+-- Create a TextLabel
+local pingLabel = Instance.new("TextLabel")
+pingLabel.Size = UDim2.new(0, 200, 0, 50) -- Width, Height
+pingLabel.Position = UDim2.new(0.5, -100, 0, 0) -- Centered on the screen
+pingLabel.TextColor3 = Color3.new(1, 1, 1) -- White text
+pingLabel.BackgroundTransparency = 1 -- Transparent background
+pingLabel.Font = Enum.Font.SourceSans
+pingLabel.TextSize = 24
+pingLabel.TextStrokeTransparency = 0.5 -- Slight outline for better visibility
+pingLabel.Parent = screenGui
+
+-- Update the ping value every second
+task.spawn(function()
+Connections.r1 = true 
+    while Connections.r1 do 
+    if IsFast >= 2 then
+        tooFast = true
+        else
+        tooFast = false
+    end
+    
+    if _G.GGH52Lan then
+        pingLabel:Destroy()
+        for i,v in pairs(Connections) do
+            if typeof(v) == "RBXScriptConnection" then
+            v:Disconnect()
+            print(i, v.Connected)
+             v = nil 
+             else 
+             	v = false
+            end 
+        end 
+        Connections = nil 
+        return nil
+    end
+    
+    local player = game.Players.LocalPlayer
+    local pingInMilliseconds = player:GetNetworkPing() * 1000 -- Correctly multiplying by 1000 for milliseconds
+    pingLabel.Text = "Ping: " .. math.floor(pingInMilliseconds) .. " ms" -- Update label text
+     
+     game:GetService("RunService").Stepped:Wait()
+end
+end)
+
+task.spawn(function()
+Humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
+Connections.r4 = plr.CharacterAdded:Connect(function()
+    Character = plr.Character
+    Humanoid = plr.Character:WaitForChild("Humanoid")
+    if (Connections.test and Connections.autoPass) or (Connections.UltraSafety and Connections.autoPass) or (Connections.Safety and Connections.autoPass) then
+        Connections.autoPass = false
+        wait()
+        pcall(function()
+            autoPass(true)
+        end) 
+    elseif (Connections.test and Connections.autoPlay) or (Connections.UltraSafety and Connections.autoPlay) or (Connections.Safety and Connections.autoPlay) then 
+        Connections.autoPlay = false
+        wait()
+    	pcall(function()
+            autoPlay(true)
+        end) 
+        end
+    end)
+end)
+
+local total_Respawn = 0
+
+task.spawn(function()
+    Connections.r3 = true 
+      while Connections.r3 do 
+        if plr.Character and plr.Character:FindFirstChild('CoinsBillboard') then
+        RoundPosition = plr.Character.PrimaryPart.CFrame
+        elseif workspace.Map.Sign.SurfaceGui.TextLabel.Text:lower():match('the game has started') then
+        if plr.Character then
+        RoundPosition = plr.Character.PrimaryPart.CFrame
+        end
+        
+        end 
+        game:GetService("RunService").Stepped:Wait()
+    end
+end)
+
+local changeLog = [["
+-- // GGH52Lan pass or die script changeLog \\ --
+
+▄▀▀░ ▄▀▀░ █░█
+█░▀▌ █░▀▌ █▀█
+▀▀▀░ ▀▀▀░ ▀░▀
+
+passing the bomb based on speed.
+
+fixed safety delay.
+
+removed not useable functions/variable.
+
+supported fast and slow mode powers (auto pass).
+
+added a function to disconnect running Connections when it's reexecuted.
+
+please avoid spamming click to the buttons to avoid bugs.
+
+auto Play was made because some players use's explode power if ur holding it for too long,
+it will automatically pass the bomb but when it's about to explode it will pause and wait a little before passing to others.
+
+NOTE.
+your ping can affect auto pass so if the bomb is passing early it's because of ur ping
+
+
+"]]
+
+spawn(function()
+print(changeLog)
+wait(40)
+notify("System","Press `F9` or type `/console` to check the latest changelog in the console.", nil, 20)
+end)
