@@ -1,0 +1,299 @@
+-- Support Pop-up GUI Script
+
+local Service = setmetatable({}, {
+	__call = function(GGH, key)
+		return (cloneref or function(Service) return Service end)(game.GetService(game, key))
+	end
+})
+
+local Players = Service("Players")
+local TweenService = Service("TweenService")
+local UserInputService = Service("UserInputService")
+local CoreGui = Service("CoreGui")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Configuration
+local LINKVERTISE_URL = "https://link-hub.net/1254389/lvbRovcEY1Li"
+local SHOW_ON_START = true -- Set to false to show manually
+
+function hide(Main)
+    if get_hidden_gui or gethui then
+    local hiddenUI = get_hidden_gui or gethui
+    Main.Parent = hiddenUI() 
+elseif (not is_sirhurt_closure) and (syn and syn.protect_gui) then
+    syn.protect_gui(Main)
+    Main.Parent = CoreGui
+elseif CoreGui:FindFirstChild("RobloxGui") then
+    Main.Parent = CoreGui.RobloxGui
+else
+    Main.Parent = CoreGui
+end
+end 
+
+-- Create GUI
+local supportGui = Instance.new("ScreenGui")
+supportGui.Name = "SupportGui"
+supportGui.ResetOnSpawn = false
+supportGui.Enabled = false
+supportGui.DisplayOrder = 9998
+supportGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+supportGui.Parent = playerGui
+
+-- Main backdrop
+local backdrop = Instance.new("Frame")
+backdrop.Name = "Backdrop"
+backdrop.Size = UDim2.new(1, 0, 1, 0)
+backdrop.Position = UDim2.new(0, 0, 0, 0)
+backdrop.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+backdrop.BackgroundTransparency = 0.5
+backdrop.BorderSizePixel = 0
+backdrop.ZIndex = 1
+backdrop.Parent = supportGui
+
+-- Main container
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 400, 0, 250)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
+mainFrame.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
+mainFrame.BorderSizePixel = 0
+mainFrame.ZIndex = 2
+mainFrame.Parent = backdrop
+
+-- Add rounded corners
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 12)
+mainCorner.Parent = mainFrame
+
+-- Add subtle border
+local mainStroke = Instance.new("UIStroke")
+mainStroke.Color = Color3.fromRGB(85, 170, 255)
+mainStroke.Thickness = 1
+mainStroke.Parent = mainFrame
+
+-- Title
+local title = Instance.new("TextLabel")
+title.Name = "Title"
+title.Size = UDim2.new(1, -40, 0, 50)
+title.Position = UDim2.new(0, 20, 0, 20)
+title.BackgroundTransparency = 1
+title.Text = "💙 Support the Creator"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 24
+title.Font = Enum.Font.SourceSansBold
+title.TextXAlignment = Enum.TextXAlignment.Center
+title.ZIndex = 3
+title.Parent = mainFrame
+
+-- Description
+local description = Instance.new("TextLabel")
+description.Name = "Description"
+description.Size = UDim2.new(1, -40, 0, 80)
+description.Position = UDim2.new(0, 20, 0, 80)
+description.BackgroundTransparency = 1
+description.Text = "Support the creator by completing a Linkvertise. This helps them make more keyless scripts and keeps them motivated!"
+description.TextColor3 = Color3.fromRGB(255, 255, 255)
+description.TextSize = 16
+description.Font = Enum.Font.SourceSans
+description.TextXAlignment = Enum.TextXAlignment.Center
+description.TextWrapped = true
+description.ZIndex = 3
+description.Parent = mainFrame
+
+-- Support Button
+local supportButton = Instance.new("TextButton")
+supportButton.Name = "SupportButton"
+supportButton.Size = UDim2.new(0, 160, 0, 40)
+supportButton.Position = UDim2.new(0, 30, 0, 180)
+supportButton.BackgroundColor3 = Color3.fromRGB(52, 152, 219)
+supportButton.BorderSizePixel = 0
+supportButton.Text = "💙 Support"
+supportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+supportButton.TextSize = 16
+supportButton.Font = Enum.Font.SourceSansBold
+supportButton.ZIndex = 3
+supportButton.Parent = mainFrame
+
+local supportCorner = Instance.new("UICorner")
+supportCorner.CornerRadius = UDim.new(0, 8)
+supportCorner.Parent = supportButton
+
+-- No Thanks Button
+local noThanksButton = Instance.new("TextButton")
+noThanksButton.Name = "NoThanksButton"
+noThanksButton.Size = UDim2.new(0, 160, 0, 40)
+noThanksButton.Position = UDim2.new(0, 210, 0, 180)
+noThanksButton.BackgroundColor3 = Color3.fromRGB(149, 165, 166)
+noThanksButton.BorderSizePixel = 0
+noThanksButton.Text = "❌ No, thanks"
+noThanksButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+noThanksButton.TextSize = 16
+noThanksButton.Font = Enum.Font.SourceSansBold
+noThanksButton.ZIndex = 3
+noThanksButton.Parent = mainFrame
+
+local noThanksCorner = Instance.new("UICorner")
+noThanksCorner.CornerRadius = UDim.new(0, 8)
+noThanksCorner.Parent = noThanksButton
+
+-- Feedback message
+local feedbackMessage = Instance.new("TextLabel")
+feedbackMessage.Name = "FeedbackMessage"
+feedbackMessage.Size = UDim2.new(1, -40, 0, 30)
+feedbackMessage.Position = UDim2.new(0, 20, 0, 140)
+feedbackMessage.BackgroundTransparency = 1
+feedbackMessage.Text = ""
+feedbackMessage.TextColor3 = Color3.fromRGB(46, 204, 113)
+feedbackMessage.TextSize = 14
+feedbackMessage.Font = Enum.Font.SourceSansBold
+feedbackMessage.TextXAlignment = Enum.TextXAlignment.Center
+feedbackMessage.ZIndex = 3
+feedbackMessage.Visible = false
+feedbackMessage.Parent = mainFrame
+
+-- Animation tweens
+local fadeInTween = TweenService:Create(
+    backdrop,
+    TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    {BackgroundTransparency = 0.5}
+)
+
+local fadeOutTween = TweenService:Create(
+    backdrop,
+    TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    {BackgroundTransparency = 1}
+)
+
+local scaleInTween = TweenService:Create(
+    mainFrame,
+    TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+    {Size = UDim2.new(0, 400, 0, 250)}
+)
+
+local scaleOutTween = TweenService:Create(
+    mainFrame,
+    TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In),
+    {Size = UDim2.new(0, 0, 0, 0)}
+)
+
+-- Functions
+local function showFeedback(message, color)
+    feedbackMessage.Text = message
+    feedbackMessage.TextColor3 = color or Color3.fromRGB(46, 204, 113)
+    feedbackMessage.Visible = true
+    
+    local feedbackTween = TweenService:Create(
+        feedbackMessage,
+        TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {TextTransparency = 0}
+    )
+    feedbackTween:Play()
+end
+
+local function copyToClipboard(text)
+    local everyClipboard = setclipboard or toclipboard or set_clipboard or (Clipboard and Clipboard.set)
+    if everyClipboard then
+        everyClipboard(text)
+        return true
+    else
+        warn("Clipboard functionality not available")
+        return false
+    end
+end
+
+local function closeGui()
+    scaleOutTween:Play()
+    fadeOutTween:Play()
+    
+    fadeOutTween.Completed:Connect(function()
+        supportGui:Destroy()
+    end)
+end
+
+local function showGui()
+    supportGui.Enabled = not supportGui.Enabled 
+    if supportGui.Enabled then
+    backdrop.BackgroundTransparency = 1
+    mainFrame.Size = UDim2.new(0, 0, 0, 0)
+    
+    fadeInTween:Play()
+    scaleInTween:Play()
+    else
+    scaleOutTween:Play()
+    fadeOutTween:Play()
+    end
+end
+
+-- Button hover effects
+local function addHoverEffect(button, normalColor, hoverColor)
+    local hoverTween = TweenService:Create(
+        button,
+        TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {BackgroundColor3 = hoverColor}
+    )
+    
+    local normalTween = TweenService:Create(
+        button,
+        TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {BackgroundColor3 = normalColor}
+    )
+    
+    button.MouseEnter:Connect(function()
+        hoverTween:Play()
+    end)
+    
+    button.MouseLeave:Connect(function()
+        normalTween:Play()
+    end)
+end
+
+-- Add hover effects
+addHoverEffect(supportButton, Color3.fromRGB(52, 152, 219), Color3.fromRGB(41, 128, 185))
+addHoverEffect(noThanksButton, Color3.fromRGB(149, 165, 166), Color3.fromRGB(127, 140, 141))
+
+-- Button events
+supportButton.MouseButton1Click:Connect(function()
+    local success = copyToClipboard(LINKVERTISE_URL)
+    if success then
+        showFeedback("✅ Link copied to clipboard! Thank you for your support!", Color3.fromRGB(46, 204, 113))
+    else
+        showFeedback("Link: " .. LINKVERTISE_URL, Color3.fromRGB(52, 152, 219))
+    end
+    
+    wait(2)
+    supportGui.Enabled = false
+end)
+
+noThanksButton.MouseButton1Click:Connect(function()
+    showFeedback("Thank you for using the script! 💙", Color3.fromRGB(52, 152, 219))
+    wait(1.5)
+    supportGui.Enabled = false
+    scaleOutTween:Play()
+    fadeOutTween:Play()
+end)
+
+-- API Functions (for manual control)
+local SupportPopup = {}
+
+function SupportPopup:Show()
+    showGui()
+end
+
+function SupportPopup:Destroy()
+    closeGui()
+end
+
+function SupportPopup:SetLinkvertiseURL(url)
+    LINKVERTISE_URL = url
+end
+
+-- Auto-show on start if enabled
+if SHOW_ON_START then
+    wait(1) -- Small delay for better UX
+    showGui()
+end
+
+-- Return API for manual control
+return SupportPopup
