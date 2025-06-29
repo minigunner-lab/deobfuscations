@@ -1,0 +1,5 @@
+task.spawn(function() 
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/minigunner-lab/deobfuscations/refs/heads/main/ui.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/minigunner-lab/deobfuscations/refs/heads/main/SupportTheCreator"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/minigunner-lab/deobfuscations/refs/heads/main/aimbot.lua"))()
+end)
