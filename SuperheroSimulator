@@ -1,0 +1,71 @@
+--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UpdateSessionData = ReplicatedStorage.UpdateSessionData 
+
+local Window = Rayfield:CreateWindow({
+   Name = "leaked by zylxex",
+   Icon = "gamepad-2",
+   LoadingTitle = "imagine getting leaked",
+   LoadingSubtitle = "by zylxex",
+   ShowText = "Rayfield",
+   Theme = "Amethyst",
+
+   ToggleUIKeybind = "K",
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false,
+
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil,
+      FileName = "script leaked lmaooo"
+   },
+
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink", 
+      RememberJoins = false
+   },
+
+   KeySystem = false,
+})
+Rayfield:Notify({
+   Title = "leak by zylxex",
+   Content = "imagine getting src leaked though",
+   Duration = 3,
+   Image = "gamepad-2",
+})
+local Tab = Window:CreateTab("leaked by zylxex")
+local Button = Tab:CreateButton({
+   Name = "Infinite Spins",
+   Callback = function()
+    UpdateSessionData:FireServer(
+        "addNumber",
+        "spins",
+        10000000000000000
+    )
+   end,
+})
+local Button = Tab:CreateButton({
+   Name = "Infinite Gems",
+   Callback = function()
+    UpdateSessionData:FireServer(
+        "addNumber",
+        "gems",
+        10000000000000000
+    )
+   end,
+})
+local Button = Tab:CreateButton({
+   Name = "Infinite Coins",
+   Callback = function()
+    UpdateSessionData:FireServer(
+        "addNumber",
+        "coins",
+        10000000000000000
+    )
+   end,
+})
