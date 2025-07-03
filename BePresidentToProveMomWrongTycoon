@@ -1,0 +1,79 @@
+--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+
+local PhantomForcesWindow = Library:NewWindow("Be President")
+local KillingCheats = PhantomForcesWindow:NewSection("Main")
+
+local RunService = game:GetService("RunService")
+local CitizensFolder = workspace:WaitForChild("Lobby"):WaitForChild("Citizens")
+local player = game.Players.LocalPlayer
+local toggled = false
+local originalPositions = {}
+local connection
+
+for _, citizen in pairs(CitizensFolder:GetChildren()) do
+    local hrp = citizen:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        originalPositions[citizen] = hrp.CFrame
+    end
+end
+
+KillingCheats:CreateToggle("Auto collect DEBT", function(state)
+    toggled = state
+
+    if toggled then
+        connection = RunService.RenderStepped:Connect(function()
+            for _, citizen in pairs(CitizensFolder:GetChildren()) do
+                local hrp = citizen:FindFirstChild("HumanoidRootPart")
+                if hrp and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                    hrp.CFrame = player.Character.HumanoidRootPart.CFrame * CFrame.new(math.random(-3, 3), 0, math.random(-3, 3))
+
+                    for _, prompt in ipairs(citizen:GetDescendants()) do
+                        if prompt:IsA("ProximityPrompt") then
+                            fireproximityprompt(prompt)
+                        end
+                    end
+                end
+            end
+        end)
+    else
+        if connection then
+            connection:Disconnect()
+            connection = nil
+        end
+
+        for _, citizen in pairs(CitizensFolder:GetChildren()) do
+            local hrp = citizen:FindFirstChild("HumanoidRootPart")
+            if hrp and originalPositions[citizen] then
+                hrp.CFrame = originalPositions[citizen]
+            end
+        end
+    end
+end)
+
+KillingCheats:CreateButton("Redeem All Codes", function()
+    local codes = { "LikeTheGame", "Mom", "Dad", "BestGameEver", "JoinTheChallenge", "President", "codelist", "GiveMeDebt", "ProveMomWrong" }
+    local remote = game:GetService("ReplicatedStorage"):FindFirstChild("RedeemCode")
+
+    if remote and remote:IsA("RemoteFunction") then
+        for _, code in ipairs(codes) do
+            pcall(function()
+                remote:InvokeServer(code)
+            end)
+        end
+    elseif remote and remote:IsA("RemoteEvent") then
+        for _, code in ipairs(codes) do
+            pcall(function()
+                remote:FireServer(code)
+            end)
+        end
+    else
+        warn("RedeemCode remote not found or unsupported type.")
+    end
+end)
+
+KillingCheats:CreateButton("Fly Gui", function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
+end)
