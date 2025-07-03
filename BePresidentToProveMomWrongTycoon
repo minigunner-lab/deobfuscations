@@ -1,6 +1,3 @@
---[[
-	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
-]]
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 
 local PhantomForcesWindow = Library:NewWindow("Be President")
@@ -20,7 +17,7 @@ for _, citizen in pairs(CitizensFolder:GetChildren()) do
     end
 end
 
-KillingCheats:CreateToggle("Auto collect DEBT", function(state)
+KillingCheats:CreateToggle("Auto collect Debt", function(state)
     toggled = state
 
     if toggled then
