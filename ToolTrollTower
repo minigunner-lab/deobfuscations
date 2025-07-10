@@ -1,0 +1,118 @@
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+local Window = Rayfield:CreateWindow({
+    Name = "Tool Troll Tower",
+    LoadingTitle = "Loading...",
+    LoadingSubtitle = "this guy skidded with chatgpt btw",
+    ConfigurationSaving = {
+        Enabled = false
+    },
+    Discord = {
+        Enabled = false,
+    },
+    KeySystem = false,
+})
+local MainTab = Window:CreateTab("Main")
+MainTab:CreateButton({
+    Name = "Spam",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        local player = Players.LocalPlayer
+
+        local SpawnList = {
+            Vector3.new(-40.65, 54.00, 36.09),
+            Vector3.new(-39.69, 53.85, 25.65),
+            Vector3.new(-41.19, 53.99, 14.64),
+        }
+
+        local RENDER_TAG = "TeleportLoop_Render"
+        local hbConn, waitThread, runningFlag
+
+        local function cleanLoops()
+            RunService:UnbindFromRenderStep(RENDER_TAG)
+            if hbConn then hbConn:Disconnect() hbConn = nil end
+            if waitThread and coroutine.status(waitThread) ~= "dead" then
+                runningFlag = false
+                waitThread = nil
+            end
+        end
+
+        local function startTeleportLoop(char)
+            cleanLoops()
+
+            local hrp = char:WaitForChild("HumanoidRootPart")
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            local index = 1
+            runningFlag = true
+
+            local function step()
+                if not runningFlag or not char.Parent or hum.Health <= 0 or not hrp.Parent then
+                    runningFlag = false
+                    cleanLoops()
+                    return
+                end
+
+                hrp.CFrame = CFrame.new(SpawnList[index])
+                index += 1
+                if index > #SpawnList then
+                    index = 1
+                end
+            end
+
+            RunService:BindToRenderStep(RENDER_TAG, Enum.RenderPriority.Camera.Value + 1, step)
+            hbConn = RunService.Heartbeat:Connect(step)
+            waitThread = coroutine.wrap(function()
+                while runningFlag do
+                    step()
+                    task.wait(0.01)
+                end
+            end)
+            waitThread()
+        end
+
+        if player.Character then
+            startTeleportLoop(player.Character)
+        end
+        player.CharacterAdded:Connect(startTeleportLoop)
+    end,
+})
+MainTab:CreateButton({
+    Name = "Ink Glove",
+    Callback = function()
+        local hrp = game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+        local positions = {
+            Vector3.new(-17.49, 4.00, -194.52),
+        }
+        for _, pos in ipairs(positions) do
+            task.wait(0.4)
+            hrp.CFrame = CFrame.new(pos)
+        end
+    end,
+})
+MainTab:CreateButton({
+    Name = "Fly",
+    Callback = function()
+        local hrp = game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+        local positions = {
+            Vector3.new(26.32, 4.00, 366.13),
+        }
+        for _, pos in ipairs(positions) do
+            task.wait(0.4)
+            hrp.CFrame = CFrame.new(pos)
+        end
+    end,
+})
+MainTab:CreateButton({
+    Name = "Coin",
+    Callback = function()
+        local hrp = game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+        local positions = {
+            Vector3.new(4.98, 15.62, -189.75),
+            Vector3.new(-215.72, 361.75, 4.01),
+        }
+        for _, pos in ipairs(positions) do
+            task.wait(0.4)
+            hrp.CFrame = CFrame.new(pos)
+        end
+    end,
+})
